@@ -1,0 +1,39 @@
+{% extends 'base/base.html' %}
+
+{% block banner %}
+     <section id="popular-courses" class="courses">
+    <div class="container" data-aos="fade-up">
+
+      <div class="section-title">
+        <h2>Các Loại</h2>
+        <p>Sách : </p>
+      </div>
+
+      <div class="row" data-aos="zoom-in" data-aos-delay="100">
+        {% for b in books%}
+        <div class="col-xs-6 col-sm-6 d-flex align-items-stretch">
+          <div class="course-item">
+            <img width="420" height="500" src="{{ url_for('static', filename=b.avatar) }}" alt="{{b.name}}">
+            <div class="course-content">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4>{{ b.name }}</h4>
+                <p class="price">{{ "{:,.0f}".format(b.donGia) }} VNĐ</p>
+              </div>
+              <h3><a href="{{ url_for('book_detail',book_id=b.id) }}">{{b.name}}</a></h3>
+              <input type="submit" value="Mua Ngay" class="btn btn-success">
+              <p>phan description</p>
+              <div class="trainer d-flex justify-content-between align-items-center">
+                <div class="trainer-rank d-flex align-items-center">
+                  <i class="bx bx-user"></i>&nbsp;150
+                  &nbsp;&nbsp;
+                  <i class="bx bx-heart"></i>&nbsp;65
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+</section>
+{% endblock %}

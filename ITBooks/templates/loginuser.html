@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý sản phẩm</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='css/login.css') }}" rel="stylesheet" />
+	<link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+<div class="container" id="container">
+		<div class="form-container sign-in-container">
+			<form action="" method="post" enctype="multipart/form-data">
+				<h1>Sign in</h1>
+				<div class="social-container">
+					<a href="#" class="social"><i class="ri-facebook-fill"></i></a>
+					<a href="#" class="social"><i class="ri-google-line"></i></a>
+					<a href="#" class="social"><i class="ri-linkedin-line"></i></a>
+				</div>
+				<span>or use your account</span>
+				<input type="text" id="username" name="username" placeholder="username" />
+				<input type="password" id="password" name="password" placeholder="Password" />
+				<a href="#">Forgot your password?</a>
+				<button>Sign In</button>
+			</form>
+		</div>
+		<form ACTION="{{url_for('register')}}">
+			<div class="overlay-container">
+				<div class="overlay-panel overlay-right" style="background: linear-gradient(to right, #FF4B2B, #FF416C);">
+					<h1>Welcome Back!</h1>
+					<p>Nếu hong có tài khoản thì đăng ký liền tay</p>
+					<button class="ghost" id="signUp">Sign Up</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
