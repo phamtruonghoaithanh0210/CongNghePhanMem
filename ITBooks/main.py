@@ -5,7 +5,7 @@ from ITBooks.utils import util_login, Read_data,util_pay
 from ITBooks.models import *
 from ITBooks.templates.admin import *
 import hashlib
-import os,json
+import os, json
 
 
 @app.route("/")
@@ -60,7 +60,6 @@ def register():
         else:
             if password == confirm:
                 name = request.form.get("name")
-
                 email = request.form.get("email")
                 avatar = request.files["avatar"]
                 path_ava = 'images/uploads/%s' % avatar.filename
@@ -88,7 +87,7 @@ def books_list():
     theloai = request.args.get("theloai")
     books = Read_data.read_books(keyword=keyword, from_price=from_price, to_price=to_price, theloai=theloai)
 
-    return render_template('book_list.html', books=books)
+    return render_template('book_list.html',books=books)
 
 
 @app.route('/books/<int:book_id>')
@@ -135,6 +134,7 @@ def cart():
 
 
 @app.route('/payment')
+@login_required
 def payment():
     quantity, amount = util_pay.cart_stats(session.get('cart'))
     cart_info = {
@@ -158,6 +158,44 @@ def pay():
     return jsonify({
         "message": "Failed"
     })
+
+
+# thêm cart của  Thủy
+@app.route('/api/sellcart', methods=["get", "post"])
+def sellcart():
+    if 'cart' not in session:
+        session['cart'] = {}
+
+    cart = session['cart']
+
+    data = request.json
+
+    idi = str(data.get("id"))
+    book = Read_data.read_books_by_id(idi)
+    name = book.name
+    donGia = float(book.donGia)
+
+    if idi in cart:
+        cart[idi]["quantity"] = cart[idi]["quantity"] + 1
+    else:
+        cart[idi] = {
+            "id": idi,
+            "name": name,
+            "donGia": donGia,
+            "quantity": 1
+        }
+
+    session['cart'] = cart
+
+    quan, price = util_pay.cart_stats(cart)
+
+    return jsonify({
+        "total_amount": price,
+        "total_quantity": quan,
+        "cart": cart
+    })
+
+
 
 
 if __name__ == '__main__':

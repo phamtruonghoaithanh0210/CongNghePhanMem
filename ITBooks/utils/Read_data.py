@@ -1,9 +1,9 @@
 from ITBooks import db, app
-from ITBooks.models import  Sach,TheLoai,TacGia
+from ITBooks.models import  Sach,TheLoai,TacGia,PhieuNhapSach, KhachHang,SoLuongSach, KhachHangNo
 import os, json
 
 
-def read_books(keyword=None, from_price=None, to_price=None, theloai = None):
+def read_books(keyword=None, from_price=None, to_price=None, theloai=None ):
     '''
 
     :param keyword: từ khóa cần tìm kiếm
@@ -11,8 +11,8 @@ def read_books(keyword=None, from_price=None, to_price=None, theloai = None):
     :param to_price: tới giá .
     :return: trả về sách đạt các yêu cầu
     '''
-    books = Sach.query.join(TheLoai, Sach.theLoai_id==TheLoai.id).join(TacGia, Sach.tacGia_id == TacGia.id)\
-            .add_columns(Sach.avatar,Sach.id, Sach.name,Sach.donGia, TheLoai.nametl,TacGia.nametg)
+    books = Sach.query.join(TheLoai, Sach.theLoai_id == TheLoai.id).join(TacGia, Sach.tacGia_id == TacGia.id)\
+            .add_columns(Sach.avatar,Sach.id, Sach.name, Sach.donGia, Sach.description, TheLoai.nametl,TacGia.nametg)
 
     if keyword:
         books = books.filter(Sach.name.contains(keyword))
@@ -26,14 +26,28 @@ def read_books(keyword=None, from_price=None, to_price=None, theloai = None):
 
     return books.all()
 
+def read_book():
+    books = Sach.query.join(TheLoai, Sach.theLoai_id == TheLoai.id).join(TacGia, Sach.tacGia_id == TacGia.id).join(SoLuongSach, Sach.id == SoLuongSach.sach_id) \
+        .add_columns(Sach.avatar, Sach.id, Sach.name, Sach.donGia, Sach.description, TheLoai.nametl, TacGia.nametg, SoLuongSach.soLuong)
+    return books.all()
 
 def read_books_by_id(book_id):
     return Sach.query.get(book_id)
 
+def read_phieunhap():
+    return PhieuNhapSach.query.all()
 
 def read_theloai():
     return TheLoai.query.all()
 
+def read_tacgia():
+    return TacGia.query.all()
 
-def read_books_by_theloai(theloai_id):
-    return TheLoai.query.get(theloai_id).books
+def read_khachhang():
+    return KhachHang.query.all()
+
+def read_khachhangno():
+    return KhachHangNo.query.all()
+
+
+

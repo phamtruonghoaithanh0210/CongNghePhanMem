@@ -32,6 +32,7 @@ class TacGia(db.Model):
         return self.nametg
 
 
+
 class Sach(BaseModel):
     __tablename__ = "Sach"
     donGia = Column(Numeric, nullable=False)
@@ -50,7 +51,7 @@ class Sach(BaseModel):
 
 class SoLuongSach(db.Model):
     __tablename__ = "soluongsach"
-    sach_id = Column(Integer, ForeignKey(Sach.id), primary_key=True,nullable=False)
+    sach_id = Column(Integer, ForeignKey(Sach.id), primary_key=True, nullable=False)
     soLuong = Column(Integer, nullable=False)
 
 '''
@@ -69,6 +70,7 @@ class User(BaseModel, UserMixin):
     avatar = Column(String(100))
     active = Column(Boolean, default=True)
     user_role = Column(Enum(UserRole), default=UserRole.KH)
+    qd = relationship('QuyDinh', backref="User", lazy= True)
 
     def __unicode__(self):
         return self.username
@@ -76,6 +78,16 @@ class User(BaseModel, UserMixin):
     def is_anonymous(self):
         return False
 
+
+class QuyDinh(db.Model):
+    __tablename__ = "quydinh"
+    id = Column(Integer, nullable=False, default=1)
+    id_user = Column(Integer, ForeignKey(User.id),primary_key=True, nullable=False)
+    quydinhnhap = Column(Integer, nullable=True, default= 150)
+    luongtonlon = Column(Integer, nullable=True, default= 300)
+    luongtonnho = Column(Integer, nullable=True, default=20)
+    tienno = Column(Numeric, nullable=True, default=20000 )
+    active = Column(Boolean, default=True)
 
 
 class NhanVien(BaseModel):
@@ -116,13 +128,14 @@ class BaoCaoTon(db.Model):
 class HoaDon(db.Model):
     __tablename__ = "HoaDon"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    ngayLapHD = Column(Date, nullable=False)
+    ngayLapHD = Column(DateTime, nullable=False)
     khachHang_id = Column(Integer, ForeignKey(KhachHang.id), nullable=False)
     nhanVien_id = Column(Integer, ForeignKey(NhanVien.id), nullable=False)
     cthd = relationship('ChiTietHoaDon', backref = 'hoadon', lazy=True)
 
     def __repr__(self):
         return repr(self.id)
+
 
 class ChiTietHoaDon(db.Model):
     __tablename__ = "ChiTietHoaDon"
@@ -141,7 +154,7 @@ class ChiTietHoaDon(db.Model):
 class PhieuNhapSach(db.Model):
     __tablename__ = "PhieuNhap"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    ngayNhap = Column(Date, nullable=False)
+    ngayNhap = Column(DateTime, nullable=False)
     ctpn = relationship('ChiTietPhieuNhap', backref='phieunhap', lazy=True)
 
     def __repr__(self) -> str:
@@ -168,7 +181,7 @@ class ChiTietPhieuNhap(db.Model):
 class PhieuThuTienNo(db.Model):
     __tablename__ = "PhieuThuTienNo"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    ngayThu = Column(Date, nullable=False)
+    ngayThu = Column(DateTime, nullable=False)
     soTien = Column(Numeric, nullable=False)
     khachHang_id = Column(Integer, ForeignKey(KhachHang.id), nullable=False)
 
@@ -184,9 +197,9 @@ class BaoCaoCongNo(db.Model):
 
 class KhachHangNo(db.Model):
     __tablename__ = "KhachHangNo"
-    ngayNo = Column(Date, primary_key=True,nullable=False)
+    ngayNo = Column(Date,nullable=False)
     soTien = Column(Numeric, nullable=False)
-    khachHang_id = Column(Integer, ForeignKey(KhachHang.id), nullable=False)
+    khachHang_id = Column(Integer, ForeignKey(KhachHang.id), primary_key=True, nullable=False)
 
 
 if __name__ == '__main__':
