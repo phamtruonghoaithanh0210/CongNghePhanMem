@@ -15,14 +15,35 @@ def cart_stats(cart):
     return total_quantity, total_amount
 
 
+def book_cart_stats(cart):
+    total_quantity = 0
+    if cart:
+        for p in cart.values():
+            total_quantity = total_quantity + p["quantity"]
+
+    return total_quantity
+
 def add_receipt(cart):
     if cart and current_user.is_authenticated:
         hoadon = HoaDon(khachHang_id=current_user.id,
-                        nhanVien_id = 1,
-                        ngayLapHD = datetime.now())
+                        nhanVien_id=1,
+                        ngayLapHD=datetime.now())
         db.session.add(hoadon)
-
+#        khno = KhachHangNo.query.get(current_user.id).first()
+#        if khno is None:
+#            tienno = 0
+#        else:
+#            tienno = khno.soTien
+#        qd = QuyDinh.query.filter(QuyDinh.id == 1).first()
+#        t = qd.tienno
+#        y = qd.luongtonnho
         for p in list(cart.values()):
+#            sls = SoLuongSach.query.get(p["id"])
+#            if sls is None :
+#                sl = 0
+#            else:
+#                sl = sls.soLuong
+ #           if tienno > int(t) or ((sl - p["quantity"]) < int(y)):
             detail = ChiTietHoaDon(hoadon=hoadon,
                                    sach_id=int(p["id"]),
                                    soLuong=p["quantity"],
@@ -129,3 +150,83 @@ def thay_doi_quy_dinh(iduser, nhaptoithieu, tontoithieunhap, tontoithieuban, tie
     except Exception as ex:
         print(ex)
     return False
+
+# sữ lý mua sách cho khách hàng
+def add_buy(cart):
+    for p in list(cart.values()):
+        idk = int(p["idk"])
+    if cart and current_user.is_authenticated:
+        '''
+         nhanvien_id thay bang current_user.id == vao` bảng User. do đang sài bảng User
+        '''
+        hoadon = HoaDon(khachHang_id=idk,
+                        nhanVien_id=current_user.id,
+                        ngayLapHD=datetime.now())
+        db.session.add(hoadon)
+        khno = KhachHangNo.query.filter(KhachHangNo.khachHang_id == idk).first()
+        if khno is None:
+            tienno = 0
+        else:
+           tienno = khno.soTien
+        qd = QuyDinh.query.filter(QuyDinh.id == 1).first()
+        t = qd.tienno
+        y = qd.luongtonnho
+        for p in list(cart.values()):
+            sls = SoLuongSach.query.filter(SoLuongSach.sach_id == p["id"]).first()
+            if sls is None:
+               sl = 0
+            else:
+               sl = sls.soLuong
+            if int(tienno) > int(t) or ((sl - p["quantity"]) < int(y)):
+                return False
+            detail = ChiTietHoaDon(hoadon=hoadon,
+                                   sach_id=int(p["id"]),
+                                   soLuong=p["quantity"],
+                                   donGia=p["donGia"],
+                                   thanhTien=p["donGia"] * p["quantity"])
+            db.session.add(detail)
+            db.session.query(SoLuongSach).filter(SoLuongSach.sach_id == p["id"]).update({'soLuong': SoLuongSach.soLuong - p["quantity"]})
+        try:
+            db.session.commit()
+            return True
+        except Exception as ex:
+            print(ex)
+    return False
+
+###
+
+
+def add_book(cart):
+    if cart and current_user.is_authenticated:
+        phieunhap = PhieuNhapSach( ngayNhap=datetime.now())
+        db.session.add(phieunhap)
+        qd = QuyDinh.query.filter(QuyDinh.id == 1).first()
+        t = qd.quydinhnhap
+        y = qd.luongtonlon
+        for p in list(cart.values()):
+            sls = SoLuongSach.query.filter(SoLuongSach.sach_id == p["id"]).first()
+            if sls is None:
+                sl = 0
+            else:
+                sl = sls.soLuong
+            if sl > int(y) or p["quantity"] > int(t):
+                return False
+            ctpn = ChiTietPhieuNhap(phieunhap = phieunhap,
+                                   sach_id=int(p["id"]),
+                                   soLuong=p["quantity"])
+            db.session.add(ctpn)
+            checkslsach = SoLuongSach.query.filter(SoLuongSach.sach_id == p["id"]).first()
+            if checkslsach is None:
+                soluongsach = SoLuongSach(sach_id=p["id"],
+                                          soLuong=int(p["quantity"]))
+                db.session.add(soluongsach)
+            else:
+                db.session.query(SoLuongSach).filter(SoLuongSach.sach_id == p["id"]).update(
+                    {'soLuong': SoLuongSach.soLuong + p["quantity"]})
+        try:
+            db.session.commit()
+            return True
+        except Exception as ex:
+            print(ex)
+    return False
+

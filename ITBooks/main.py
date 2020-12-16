@@ -169,8 +169,9 @@ def sellcart():
     cart = session['cart']
 
     data = request.json
-
     idi = str(data.get("id"))
+    idk = str(data.get("idk"))
+    date = data.get("date")
     book = Read_data.read_books_by_id(idi)
     name = book.name
     donGia = float(book.donGia)
@@ -182,7 +183,9 @@ def sellcart():
             "id": idi,
             "name": name,
             "donGia": donGia,
-            "quantity": 1
+            "quantity": 1,
+            "idk": idk,
+            "date": date
         }
 
     session['cart'] = cart
@@ -194,6 +197,72 @@ def sellcart():
         "total_quantity": quan,
         "cart": cart
     })
+
+
+@app.route('/api/submit-buy', methods=['post'])
+@decorator.login_required
+def submit_buy():
+    if util_pay.add_buy(session.get('cart')):
+        del session['cart']
+
+        return jsonify({
+            "message": "Add receipt successful!",
+            "err_code": 200
+        })
+
+    return jsonify({
+        "message": "Failed"
+    })
+
+
+# cái này dùng để khởi tạo một cái cart cho nhập sách
+@app.route('/api/bookcart', methods=["post","get"])
+def bookcart():
+    if "book_cart" not in session:
+        session['book_cart'] = {}
+
+    book_cart = session['book_cart']
+
+    data = request.json
+    id = str(data.get("id"))
+    book = Read_data.read_books_by_id(id)
+    name = book.name
+    donGia = float(book.donGia)
+
+    if id in book_cart:
+        '''
+            đã có sản phẩm ở trong giỏ. => tăng số lượng.
+        '''
+        book_cart[id]["quantity"] = book_cart[id]["quantity"] + 1
+    else:
+        book_cart[id] = {
+            "id": id,
+            "name": name,
+            "donGia": donGia,
+            "quantity": 1
+        }
+    session['book_cart'] = book_cart
+    quan = util_pay.book_cart_stats(book_cart)
+
+    return jsonify({
+        "total_quantity": quan
+    })
+
+@app.route('/api/submit-buybook', methods=['post'])
+@decorator.login_required
+def submit_buybook():
+    if util_pay.add_book(session.get('book_cart')):
+        del session['book_cart']
+
+        return jsonify({
+            "message": "Add receipt successful!",
+            "err_code": 200
+        })
+
+    return jsonify({
+        "message": "Failed"
+    })
+
 
 
 

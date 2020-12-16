@@ -5,38 +5,25 @@
 {%endblock%}
 {% block body  %}
     <form class="form-group" method="post">
-        <h3 class="text-center text-danger">Hóa Đơn Bán Sách</h3>
-        {%if err_msg %}
-        <div class="alert alert-warning">
-            {{err_msg}}
-        </div>
-        {% endif %}
-         <div class = "form-group">
-            <label>Khách Hàng :</label>
-             <select id="idkhach" class="form-control">
-             {% for k in khachhang%}
-                 <option value="{{k.id}}">{{k.name}}</option>
-             {% endfor %}
-             </select>
-        </div>
+        <h3 class="text-center text-danger">Nhập Sách</h3>
         <div class="row form-group">
-             <label class="mx-3"> Sách Khách Hàng Mua :</label>
+             <label class="mx-3"> Sách Nhập :</label>
             <div>
-                 <select name="idsach" id="idsach" class="col form-control">
-                 {% for p in sach%}
-                     <option name="{{p.donGia}}" value="{{p.id}}">{{p.name}}</option>
-                  {% endfor %}
+                 <select name="idsach" id="idsach" class=" col form-control">
+                     {% for p in sach %}
+                         <option  value="{{ p.id }}">{{p.name}}</option>
+                      {% endfor %}
                  </select>
             </div>
             <button class="btn btn-outline-success">
                 <a href="javascript:;"
-                   onclick="addToSell()">Đặt hàng</a>
+                   onclick="addBookCart()">Đặt hàng</a>
             </button>
         </div>
     </form>
     <!-- xử lý cái giỏ -->
         <div class="cash">
-    <h1 class="text-center text-info">Danh Sách Sản Phẩm</h1>
+    <h1 class="text-center text-info">Danh Sách Sách</h1>
     <table class="table" id="new-product">
         <tr>
             <th>ID</th>
@@ -44,12 +31,12 @@
             <th>Giá Tiền </th>
             <th>Số Lượng</th>
         </tr>
-        {% if 'cart' in session %}
-        {% for p in session['cart'].values() %}
+        {% if 'book_cart' in session %}
+        {% for p in session['book_cart'].values() %}
         <tr>
             <td>{{ p.id }}</td>
             <td>{{ p.name }}</td>
-            <td>{{ "{:,.0f}".format(p.donGia) }}</td>
+            <td>{{"{:,.0f}".format(p.donGia) }}</td>
             <td>
                 <div class="form-group">
                     <input type="number"
@@ -65,7 +52,7 @@
     <!-- Xử lý cái giỏ -->
     <h1 id="cart-info"></h1>
     <input type="button"
-           onclick="submitBuy()"
+           onclick="submitAddBook()"
            value="Thanh Toán"
            class="btn btn-danger" />
     </div>

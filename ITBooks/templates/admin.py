@@ -33,6 +33,19 @@ class NhapSachView(BaseView):
             return current_user.is_authenticated
 
 
+class NhapSach1View(BaseView):
+    @expose('/', methods=['post', 'get'])
+    def indexns1(self):
+
+        sach = Read_data.read_books()
+
+        return self.render('admin/nhapsach1.html', sach=sach)
+
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+
+
 class HoaDonBanSachView(BaseView):
     @expose('/', methods=['post', 'get'])
     def indexhd(self):
@@ -198,42 +211,45 @@ class PhieuThuNoModelView(Authenticated):
     column_display_pk = True
 
 
-admin.add_view(NhanVienModelView(NhanVien, db.session, name="Nhân Viên"))
+admin.add_view(NhanVienModelView(NhanVien, db.session, name="Nhân Viên", category="Team Sách"))
 
-admin.add_view(KhachHangModelView(KhachHang, db.session, name='Khách Hàng'))
+admin.add_view(KhachHangModelView(KhachHang, db.session, name='Khách Hàng',category="TeamKH"))
 
-admin.add_view(KhachHangNoModelView(KhachHangNo, db.session, name= 'Khách Hàng Nợ'))
+admin.add_view(KhachHangNoModelView(KhachHangNo, db.session, name= 'Khách Hàng Nợ',category="TeamKH"))
 
-admin.add_view(TacGiaModelView(TacGia, db.session, name= 'Tác Giả'))
+admin.add_view(TacGiaModelView(TacGia, db.session, name= 'Tác Giả', category="Team Sách"))
 
-admin.add_view(TheLoaiModelView(TheLoai, db.session, name='Thể Loại'))
+admin.add_view(TheLoaiModelView(TheLoai, db.session, name='Thể Loại', category="Team Sách"))
 
-admin.add_view(SachModelView(Sach, db.session, name='Sách'))
+admin.add_view(SachModelView(Sach, db.session, name='Sách', category="Team Sách"))
 
-#admin.add_view(PhieuNhapSachModelView(PhieuNhapSach, db.session, name ="Phiếu Nhập Sách"))
+admin.add_view(PhieuNhapSachModelView(PhieuNhapSach, db.session, name ="Phiếu Nhập Sách", category="Team Sách"))
 
-#admin.add_view(ChiTietPhieuNhapModelView(ChiTietPhieuNhap, db.session, name="Nhập Sách"))
+admin.add_view(ChiTietPhieuNhapModelView(ChiTietPhieuNhap, db.session, name="Nhập Sách", category="Team Sách"))
 
-admin.add_view(HoaDonModelView(HoaDon, db.session, name= 'Hóa Đơn'))
+admin.add_view(HoaDonModelView(HoaDon, db.session, name= 'Hóa Đơn', category="Team"))
 
-admin.add_view(ChiTietHoaDonModelView(ChiTietHoaDon, db.session, name='Chi Tiết Hóa Đơn'))
+admin.add_view(ChiTietHoaDonModelView(ChiTietHoaDon, db.session, name='Chi Tiết Hóa Đơn',  category="Team"))
 admin.add_view(ModelView(QuyDinh, db.session))
 
-#admin.add_view(PhieuThuNoModelView(PhieuThuTienNo, db.session, name="Phiếu Thu Nợ"))
+admin.add_view(PhieuThuNoModelView(PhieuThuTienNo, db.session, name="Phiếu Thu Nợ", category="TeamKH"))
 
 #admin.add_view(BaoCaoTonModelView(BaoCaoTon, db.session, name='Báo Cáo Tồn'))
 
 #admin.add_view(BaoCaoCongNoModelView(BaoCaoCongNo, db.session, name='Báo Cáo Công Nợ'))
 
-admin.add_view(SoLuongSachModelView(SoLuongSach, db.session, name="Số Lượng"))
+admin.add_view(SoLuongSachModelView(SoLuongSach, db.session, name="Số Lượng", category="Team Sách"))
 
-admin.add_view(ContactView(name='Lien He'))
 
-admin.add_view(LogoutView(name='Log Out'))
 
-admin.add_view(NhapSachView(name="Nhập Sách 1"))
+admin.add_view(NhapSachView(name="Nhập Sách"))
 admin.add_view(HoaDonBanSachView(name="Hóa Đơn Bán"))
 admin.add_view(DanhSachSachView(name="Danh Sách Sách"))
 admin.add_view(PhieuThuTienView(name = "Phiếu Thu Tiền"))
 admin.add_view(QuyDinhView(name="Thay Đổi Quy Định"))
+admin.add_view(NhapSach1View(name="Nhập Sách 1"))
 
+
+admin.add_view(ContactView(name='Lien He'))
+
+admin.add_view(LogoutView(name='Log Out'))

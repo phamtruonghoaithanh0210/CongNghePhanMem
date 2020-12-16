@@ -34,6 +34,9 @@ def read_book():
 def read_books_by_id(book_id):
     return Sach.query.get(book_id)
 
+def read_KHno_by_id(kh_id):
+    return KhachHangNo.query.get(kh_id)
+
 def read_phieunhap():
     return PhieuNhapSach.query.all()
 
