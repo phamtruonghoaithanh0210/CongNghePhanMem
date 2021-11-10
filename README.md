@@ -1,2 +1,3 @@
 # sprint2
-bài tập python sprint 2
+bài tập Công nghệ phần mềm.
+Đề tài về : Quản Lý Sách.
